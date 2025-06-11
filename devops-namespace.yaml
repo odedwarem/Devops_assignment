@@ -1,4 +1,4 @@
 apiVersion: v1
-kind: Namespace
+kind: Namespace #Creating namespace
 metadata:
   name: devops

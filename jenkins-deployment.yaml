@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment #Deploying a pod
+metadata: #Creating jenkins pod inside devops namespace
+  name: jenkins
+  namespace: devops
+spec:
+  replicas: 1 #Creating one pod
+  selector: #The pods that the deployment controls
+    matchLabels:
+      app: jenkins
+  template: #Pod template
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      containers: #Defining the jenkins container
+      - name: jenkins
+        image: jenkins/jenkins:lts #Getting jenkins from docker hub
+        ports:
+        - containerPort: 8080 #The port jenkins listens on
