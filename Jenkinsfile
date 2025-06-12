@@ -1,34 +1,8 @@
 pipeline {
   agent { //Creating agent to be able to use dotnet,docker, and kubectl in the pipeline
     kubernetes {
-      label 'jenkins-devops-agent'
+      inheritFrom 'jenkins-devops-agent'
       defaultContainer 'dotnet'
-      //Creating Pod for dotnet,docker, and kubectl containers. 
-      yaml """ 
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-    - name: dotnet
-      image: mcr.microsoft.com/dotnet/sdk:8.0
-      command: ['cat']
-      tty: true
-    - name: docker
-      image: docker:28.2.2-cli 
-      command: ['cat']
-      tty: true
-      volumeMounts:
-        - name: docker-sock
-          mountPath: /var/run/docker.sock
-    - name: kubectl
-      image: bitnami/kubectl:latest
-      command: ['cat']
-      tty: true
-  volumes:
-    - name: docker-sock
-      hostPath:
-        path: /var/run/docker.sock
-"""
     }
   }
 
