@@ -13,6 +13,7 @@ spec:
       labels:
         app: jenkins
     spec:
+      serviceAccountName: jenkins
       containers: #Defining the jenkins container
       - name: jenkins
         image: jenkins/jenkins:lts #Getting jenkins from docker hub
