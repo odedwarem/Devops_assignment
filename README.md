@@ -4,8 +4,10 @@ Steps:
 2. open powershell
 3. start minikube using docker-desktop:
 minikube start --driver=docker
-4. initialize jenkins in k8s using the config file
+4. initialize jenkins and namespaces in k8s using the config file
 jenkins-setup.ps1
+if powershell does not allow scripts, use this:
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 5. (optional) check if jenkins in online
 kubectl get all -n devops
 kubectl get pods -n devops
