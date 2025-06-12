@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service #Exposing a pod to the outside
+metadata: #Name and namespace of service
+  name: jenkins
+  namespace: devops
+spec:
+  type: NodePort #Exposing to the local pc
+  selector: #Getting the jenkins pod
+    app: jenkins
+  ports:
+    - port: 8080 #Internal service port
+      targetPort: 8080 #The port jenkins listens on
+      nodePort: 30080 #The external port on pc
