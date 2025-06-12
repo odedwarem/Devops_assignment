@@ -1,0 +1,4 @@
+apiVersion: v1
+kind: Namespace #Creating namespace
+metadata:
+  name: app-prod

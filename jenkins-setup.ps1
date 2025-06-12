@@ -6,3 +6,6 @@ kubectl apply -f jenkins-deployment.yaml
 kubectl apply -f jenkins-service.yaml
 
 Write-Host "Jenkins Deployed successfully"
+
+Write-Host "Creating production namespace"
+kubectl apply -f app-prod-namespace.yaml
