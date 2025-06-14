@@ -1,3 +1,4 @@
+# Service configuration to expose Jenkins
 apiVersion: v1
 kind: Service #Exposing a pod to the outside
 metadata: #Name and namespace of service

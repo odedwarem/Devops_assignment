@@ -1,3 +1,6 @@
+# Script to set up Jenkins in Kubernetes
+# This script creates all necessary resources for Jenkins
+
 Write-Host "Creating devops namespace"
 kubectl apply -f devops-namespace.yaml
 

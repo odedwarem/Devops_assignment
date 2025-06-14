@@ -1,3 +1,4 @@
+# Deployment configuration for Jenkins
 apiVersion: apps/v1
 kind: Deployment #Deploying a pod
 metadata: #Creating jenkins pod inside devops namespace

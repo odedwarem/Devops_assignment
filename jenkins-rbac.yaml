@@ -1,4 +1,4 @@
-#Creating a service account named jenkins
+# ServiceAccount for Jenkins to interact with Kubernetes
 apiVersion: v1
 kind: ServiceAccount
 metadata:

@@ -1,3 +1,4 @@
+# Namespace for Jenkins and other DevOps tools
 apiVersion: v1
 kind: Namespace #Creating namespace
 metadata:
