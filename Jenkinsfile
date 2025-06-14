@@ -4,6 +4,7 @@ pipeline {
       label 'jenkins-agent'
       inheritFrom 'default'
       defaultContainer 'dotnet'
+      namespace 'devops'
       yaml """
 apiVersion: v1
 kind: Pod
