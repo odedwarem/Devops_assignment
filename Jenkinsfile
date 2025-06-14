@@ -109,6 +109,15 @@ spec:
       steps {
         container('kubectl') {
           sh """
+            echo 'Checking kubectl configuration...'
+            kubectl config view
+            echo 'Checking service account token...'
+            ls -l /var/run/secrets/kubernetes.io/serviceaccount/
+            echo 'Checking cluster access...'
+            kubectl get nodes
+            echo 'Checking namespace access...'
+            kubectl get ns
+            echo 'Attempting deployment...'
             kubectl delete deployment ${IMAGE_NAME} -n ${NAMESPACE_PROD} --ignore-not-found
             kubectl create deployment ${IMAGE_NAME} --image=${IMAGE_NAME}:${IMAGE_TAG} -n ${NAMESPACE_PROD}
             kubectl expose deployment ${IMAGE_NAME} --port=80 --type=NodePort --name=${IMAGE_NAME}-service -n ${NAMESPACE_PROD}
