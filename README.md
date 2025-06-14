@@ -23,34 +23,36 @@ This project demonstrates a simple .NET Web API application with a complete CI/C
 
 ## Setup Instructions
 
-1. Start Minikube with Docker driver:
+1. Activate Docker desktop
+
+2. Start Minikube with Docker driver:
    ```bash
    minikube start --driver=docker
    ```
 
-2. If PowerShell script execution is blocked, allow it:
+3. If PowerShell script execution is blocked, allow it:
    ```powershell
    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
    ```
 
-3. Run the Jenkins setup script:
+4. Run the Jenkins setup script:
    ```powershell
    .\jenkins-setup.ps1
    ```
 
-4. Verify Jenkins deployment:
+5. Verify Jenkins deployment:
    ```bash
    kubectl get all -n devops
    kubectl get pods -n devops
    kubectl get service jenkins -n devops
    ```
 
-5. Get Jenkins initial admin password:
+6. Get Jenkins initial admin password:
    ```bash
    kubectl exec --namespace devops -it deploy/jenkins -- cat /var/jenkins_home/secrets/initialAdminPassword
    ```
 
-6. Access Jenkins:
+7. Access Jenkins:
    ```bash
    minikube service jenkins -n devops --url
    ```
