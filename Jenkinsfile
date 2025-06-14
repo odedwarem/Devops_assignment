@@ -2,6 +2,7 @@ pipeline {
   agent {
     kubernetes {
       label 'jenkins-agent'
+      inheritFrom 'default'
       defaultContainer 'dotnet'
       yaml """
 apiVersion: v1
@@ -12,6 +13,15 @@ metadata:
 spec:
   serviceAccountName: jenkins
   containers:
+  - name: jnlp
+    image: jenkins/inbound-agent:latest
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
   - name: dotnet
     image: mcr.microsoft.com/dotnet/sdk:8.0
     command:
