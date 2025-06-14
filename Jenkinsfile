@@ -54,6 +54,13 @@ spec:
     command:
     - cat
     tty: true
+    env:
+    - name: KUBECONFIG
+      value: "/root/.kube/config"
+    volumeMounts:
+    - name: kubeconfig
+      mountPath: /root/.kube
+      readOnly: true
     resources:
       requests:
         memory: "256Mi"
@@ -65,6 +72,10 @@ spec:
   - name: docker-sock
     hostPath:
       path: /var/run/docker.sock
+  - name: kubeconfig
+    secret:
+      secretName: jenkins-kubeconfig
+      defaultMode: 0600
 """
     }
   }
@@ -105,13 +116,13 @@ spec:
       }
     }
 
-    stage('Deploy to PROD') { //Redeploys the app and exposes it. Runs inside kubectl container
+    stage('Deploy to PROD') {
       steps {
         container('kubectl') {
           sh """
-            kubectl delete deployment ${IMAGE_NAME} -n ${NAMESPACE_PROD} --ignore-not-found
+            kubectl get nodes
+            kubectl get namespace ${NAMESPACE_PROD} || kubectl create namespace ${NAMESPACE_PROD}
             kubectl create deployment ${IMAGE_NAME} --image=${IMAGE_NAME}:${IMAGE_TAG} -n ${NAMESPACE_PROD}
-            kubectl expose deployment ${IMAGE_NAME} --port=80 --type=NodePort --name=${IMAGE_NAME}-service -n ${NAMESPACE_PROD}
           """
         }
       }
