@@ -22,12 +22,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.UseAuthorization();
-
-// Add a simple endpoint
+// Add a simple endpoint before other middleware
 app.MapGet("/", () => "Hello from .NET Web API!");
 
+app.UseHttpsRedirection();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
