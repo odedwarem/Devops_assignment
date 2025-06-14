@@ -15,6 +15,11 @@ spec:
   containers:
   - name: jnlp
     image: jenkins/inbound-agent:latest
+    env:
+    - name: JENKINS_URL
+      value: "http://jenkins.devops.svc.cluster.local:8080"
+    - name: JENKINS_TUNNEL
+      value: "jenkins.devops.svc.cluster.local:50000"
     resources:
       requests:
         memory: "256Mi"
