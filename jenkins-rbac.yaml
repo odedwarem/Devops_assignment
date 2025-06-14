@@ -15,11 +15,8 @@ metadata:
   namespace: devops
 rules:
   - apiGroups: [""]
-    resources: ["pods", "pods/log", "services", "secrets"] #Allow to manage pods, access logs, create services and image pull
-    verbs: ["get", "watch", "list", "create", "delete"]
-  - apiGroups: ["apps"]
-    resources: ["deployments"] #Allow to deploy and update applications
-    verbs: ["get", "watch", "list", "create", "delete", "patch", "update"]
+    resources: ["pods", "pods/exec", "pods/log"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
 ---
 
@@ -46,11 +43,11 @@ metadata:
   name: jenkins-role-binding
   namespace: devops
 subjects:
-  - kind: ServiceAccount #Binding to serviceAccount
+  - kind: ServiceAccount
     name: jenkins
     namespace: devops
 roleRef:
-  kind: Role #Binding to a role
+  kind: Role
   name: jenkins-role
   apiGroup: rbac.authorization.k8s.io
 
@@ -69,4 +66,33 @@ subjects:
 roleRef:
   kind: Role
   name: jenkins-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: jenkins-cluster-role
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/exec", "pods/log", "pods/portforward"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: jenkins-cluster-role-binding
+subjects:
+- kind: ServiceAccount
+  name: jenkins
+  namespace: devops
+roleRef:
+  kind: ClusterRole
+  name: jenkins-cluster-role
   apiGroup: rbac.authorization.k8s.io
