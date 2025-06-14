@@ -108,16 +108,27 @@ spec:
     stage('Deploy to PROD') { //Redeploys the app and exposes it. Runs inside kubectl container
       steps {
         container('kubectl') {
-          sh """
-            echo "Checking if kubectl can reach the cluster"
-            kubectl get pods -n ${NAMESPACE_PROD}
-            echo "Deleting deployment ${IMAGE_NAME} in namespace ${NAMESPACE_PROD}"
-            kubectl delete deployment ${IMAGE_NAME} -n ${NAMESPACE_PROD} --ignore-not-found || true
-            echo "Creating deployment ${IMAGE_NAME} with image ${IMAGE_NAME}:${IMAGE_TAG}"
-            kubectl create deployment ${IMAGE_NAME} --image=${IMAGE_NAME}:${IMAGE_TAG} -n ${NAMESPACE_PROD}
-            echo "Exposing deployment ${IMAGE_NAME} as service"
-            kubectl expose deployment ${IMAGE_NAME} --port=80 --type=NodePort --name=${IMAGE_NAME}-service -n ${NAMESPACE_PROD}
-          """
+          script {
+                // Check if kubectl can reach the cluster
+                echo "Checking if kubectl can reach the cluster"
+                sh "kubectl cluster-info"
+                
+                // Add timeout to each kubectl command and more debugging
+                echo "Checking pods in namespace ${NAMESPACE_PROD}"
+                sh "kubectl get pods -n ${NAMESPACE_PROD} --timeout=60s"
+
+                echo "Deleting deployment ${IMAGE_NAME} in namespace ${NAMESPACE_PROD}"
+                sh "kubectl delete deployment ${IMAGE_NAME} -n ${NAMESPACE_PROD} --ignore-not-found --timeout=60s || true"
+
+                echo "Creating deployment ${IMAGE_NAME} with image ${IMAGE_NAME}:${IMAGE_TAG}"
+                sh "kubectl create deployment ${IMAGE_NAME} --image=${IMAGE_NAME}:${IMAGE_TAG} -n ${NAMESPACE_PROD} --timeout=60s"
+
+                echo "Waiting for the deployment to stabilize"
+                sh "kubectl rollout status deployment/${IMAGE_NAME} -n ${NAMESPACE_PROD} --timeout=180s"
+
+                echo "Exposing deployment ${IMAGE_NAME} as service"
+                sh "kubectl expose deployment ${IMAGE_NAME} --port=80 --type=NodePort --name=${IMAGE_NAME}-service -n ${NAMESPACE_PROD} --timeout=60s"
+            }
         }
       }
     }
