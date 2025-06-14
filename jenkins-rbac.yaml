@@ -22,7 +22,24 @@ rules:
     verbs: ["get", "watch", "list", "create", "delete", "patch", "update"]
 
 ---
-#Binding role to the jenkins serviceAccount
+
+#Defining role that grants permissions in the app-prod namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: jenkins-role
+  namespace: app-prod
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "services", "secrets"]
+    verbs: ["get", "watch", "list", "create", "delete"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "watch", "list", "create", "delete", "patch", "update"]
+
+---
+
+#Binding role to the jenkins serviceAccount in devops namespace
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -34,5 +51,22 @@ subjects:
     namespace: devops
 roleRef:
   kind: Role #Binding to a role
+  name: jenkins-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+#Binding role to the jenkins serviceAccount in app-prod namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jenkins-role-binding
+  namespace: app-prod
+subjects:
+  - kind: ServiceAccount
+    name: jenkins
+    namespace: devops
+roleRef:
+  kind: Role
   name: jenkins-role
   apiGroup: rbac.authorization.k8s.io
