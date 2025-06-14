@@ -108,19 +108,23 @@ spec:
     stage('Deploy to PROD') { //Redeploys the app and exposes it. Runs inside kubectl container
       steps {
         container('kubectl') {
-          sh '''
-            echo "Starting kubectl commands..."
+          writeFile file: 'deploy.sh', text: '''
+            #!/bin/sh
+            echo "=== Environment Check ==="
+            pwd
+            echo "=== Kubectl Check ==="
             which kubectl
-            echo "Kubectl location found"
-            kubectl version
-            echo "Version check complete"
+            echo "=== Service Account Check ==="
+            ls -l /var/run/secrets/kubernetes.io/serviceaccount/
+            echo "=== Current Context ==="
+            kubectl config view
+            echo "=== Starting Deployment ==="
             kubectl delete deployment ${IMAGE_NAME} -n ${NAMESPACE_PROD} --ignore-not-found
-            echo "Delete command complete"
             kubectl create deployment ${IMAGE_NAME} --image=${IMAGE_NAME}:${IMAGE_TAG} -n ${NAMESPACE_PROD}
-            echo "Create command complete"
             kubectl expose deployment ${IMAGE_NAME} --port=80 --type=NodePort --name=${IMAGE_NAME}-service -n ${NAMESPACE_PROD}
-            echo "Expose command complete"
           '''
+          sh 'chmod +x deploy.sh'
+          sh './deploy.sh'
         }
       }
     }
