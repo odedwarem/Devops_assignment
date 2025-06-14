@@ -105,13 +105,14 @@ spec:
       }
     }
 
-    stage('Deploy to PROD') { //Redeploys the app and exposes it
+    stage('Deploy to PROD') { //Redeploys the app and exposes it. Runs inside kubectl container
       steps {
-        sh """
-          kubectl delete deployment ${IMAGE_NAME} -n ${NAMESPACE_PROD} --ignore-not-found
-          kubectl create deployment ${IMAGE_NAME} --image=${IMAGE_NAME}:${IMAGE_TAG} -n ${NAMESPACE_PROD}
-          kubectl expose deployment ${IMAGE_NAME} --port=80 --type=NodePort --name=${IMAGE_NAME}-service -n ${NAMESPACE_PROD}
-        """
+        container('kubectl') {
+          sh 'kubectl version'
+          sh 'kubectl delete deployment ${IMAGE_NAME} -n ${NAMESPACE_PROD} --ignore-not-found'
+          sh 'kubectl create deployment ${IMAGE_NAME} --image=${IMAGE_NAME}:${IMAGE_TAG} -n ${NAMESPACE_PROD}'
+          sh 'kubectl expose deployment ${IMAGE_NAME} --port=80 --type=NodePort --name=${IMAGE_NAME}-service -n ${NAMESPACE_PROD}'
+        }
       }
     }
   }
