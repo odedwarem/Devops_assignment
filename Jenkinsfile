@@ -50,9 +50,10 @@ spec:
         memory: "512Mi"
         cpu: "500m"
   - name: kubectl
-    image: bitnami/kubectl:latest
+    image: bitnami/kubectl:1.28
     command:
-    - cat
+    - sleep
+    - "999999"
     tty: true
     resources:
       requests:
@@ -108,23 +109,11 @@ spec:
     stage('Deploy to PROD') { //Redeploys the app and exposes it. Runs inside kubectl container
       steps {
         container('kubectl') {
-          writeFile file: 'deploy.sh', text: '''
-            #!/bin/sh
-            echo "=== Environment Check ==="
-            pwd
-            echo "=== Kubectl Check ==="
-            which kubectl
-            echo "=== Service Account Check ==="
-            ls -l /var/run/secrets/kubernetes.io/serviceaccount/
-            echo "=== Current Context ==="
-            kubectl config view
-            echo "=== Starting Deployment ==="
+          sh """
             kubectl delete deployment ${IMAGE_NAME} -n ${NAMESPACE_PROD} --ignore-not-found
             kubectl create deployment ${IMAGE_NAME} --image=${IMAGE_NAME}:${IMAGE_TAG} -n ${NAMESPACE_PROD}
             kubectl expose deployment ${IMAGE_NAME} --port=80 --type=NodePort --name=${IMAGE_NAME}-service -n ${NAMESPACE_PROD}
-          '''
-          sh 'chmod +x deploy.sh'
-          sh './deploy.sh'
+          """
         }
       }
     }
