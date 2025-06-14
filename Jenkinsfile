@@ -109,8 +109,13 @@ spec:
       steps {
         container('kubectl') {
           sh """
-            kubectl delete deployment ${IMAGE_NAME} -n ${NAMESPACE_PROD} --ignore-not-found
+            echo "Checking if kubectl can reach the cluster"
+            kubectl get pods -n ${NAMESPACE_PROD}
+            echo "Deleting deployment ${IMAGE_NAME} in namespace ${NAMESPACE_PROD}"
+            kubectl delete deployment ${IMAGE_NAME} -n ${NAMESPACE_PROD} --ignore-not-found || true
+            echo "Creating deployment ${IMAGE_NAME} with image ${IMAGE_NAME}:${IMAGE_TAG}"
             kubectl create deployment ${IMAGE_NAME} --image=${IMAGE_NAME}:${IMAGE_TAG} -n ${NAMESPACE_PROD}
+            echo "Exposing deployment ${IMAGE_NAME} as service"
             kubectl expose deployment ${IMAGE_NAME} --port=80 --type=NodePort --name=${IMAGE_NAME}-service -n ${NAMESPACE_PROD}
           """
         }
