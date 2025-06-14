@@ -50,7 +50,7 @@ spec:
         memory: "512Mi"
         cpu: "500m"
   - name: kubectl
-    image: lachlanevenson/k8s-kubectl:v1.27.0
+    image: lachlanevenson/k8s-kubectl:latest
     command:
     - cat
     tty: true
