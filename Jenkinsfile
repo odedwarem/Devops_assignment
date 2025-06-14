@@ -50,17 +50,10 @@ spec:
         memory: "512Mi"
         cpu: "500m"
   - name: kubectl
-    image: bitnami/kubectl:latest
+    image: lachlanevenson/k8s-kubectl:v1.28.0
     command:
     - cat
     tty: true
-    env:
-    - name: KUBECONFIG
-      value: "/root/.kube/config"
-    volumeMounts:
-    - name: kubeconfig
-      mountPath: /root/.kube
-      readOnly: true
     resources:
       requests:
         memory: "256Mi"
@@ -72,10 +65,6 @@ spec:
   - name: docker-sock
     hostPath:
       path: /var/run/docker.sock
-  - name: kubeconfig
-    secret:
-      secretName: jenkins-kubeconfig
-      defaultMode: 0600
 """
     }
   }
