@@ -112,7 +112,7 @@ spec:
             kubectl delete deployment ${IMAGE_NAME} -n ${NAMESPACE_PROD} --ignore-not-found
             kubectl delete service ${IMAGE_NAME}-service -n ${NAMESPACE_PROD} --ignore-not-found
             kubectl create deployment ${IMAGE_NAME} --image=${IMAGE_NAME}:${IMAGE_TAG} -n ${NAMESPACE_PROD}
-            kubectl expose deployment ${IMAGE_NAME} --port=8080 --target-port=8080 --type=LoadBalancer --name=${IMAGE_NAME}-service -n ${NAMESPACE_PROD}
+            kubectl expose deployment ${IMAGE_NAME} --port=8080 --target-port=8080 --type=NodePort --name=${IMAGE_NAME}-service -n ${NAMESPACE_PROD}
           """
         }
       }
