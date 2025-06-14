@@ -24,6 +24,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+
+// Add a simple endpoint
+app.MapGet("/", () => "Hello from .NET Web API!");
+
 app.MapControllers();
 
 app.Run();
