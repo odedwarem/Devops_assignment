@@ -50,10 +50,9 @@ spec:
         memory: "512Mi"
         cpu: "500m"
   - name: kubectl
-    image: bitnami/kubectl:1.28
+    image: bitnami/kubectl:latest
     command:
-    - sleep
-    - "999999"
+    - cat
     tty: true
     resources:
       requests:
